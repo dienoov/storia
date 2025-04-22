@@ -1,2 +1,9 @@
 {
+  "login": "Login",
+  "loginDescription": "Masuk menggunakan email yang terdaftar",
+  "register": "Daftar",
+  "registerDescription": "Buat akun untuk mulai menggunakan aplikasi",
+  "name": "Nama",
+  "email": "Email",
+  "password": "Kata Sandi"
 }

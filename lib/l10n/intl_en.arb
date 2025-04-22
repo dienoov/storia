@@ -1,2 +1,9 @@
 {
+  "login": "Login",
+  "loginDescription": "Login to your account using your registered email",
+  "register": "Register",
+  "registerDescription": "Create an account to start using the app",
+  "name": "Name",
+  "email": "Email",
+  "password": "Password"
 }
