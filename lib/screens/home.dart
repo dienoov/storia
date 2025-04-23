@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:storia/apis/stories.dart';
 import 'package:storia/common.dart';
 import 'package:storia/models/story.dart';
+import 'package:storia/models/user.dart';
 import 'package:storia/widgets/language_button.dart';
+import 'package:storia/widgets/user_button.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String token;
+  final User user;
   final Function(String) toStory;
+  final Function() refresh;
 
-  const HomeScreen({super.key, required this.token, required this.toStory});
+  const HomeScreen({
+    super.key,
+    required this.user,
+    required this.toStory,
+    required this.refresh,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -21,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _storiesApi = StoriesApi(widget.token);
+    _storiesApi = StoriesApi(widget.user.token);
     _stories = _storiesApi.all();
   }
 
@@ -34,7 +42,11 @@ class _HomeScreenState extends State<HomeScreen> {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         forceMaterialTransparency: true,
-        actions: [const LanguageButton(), const SizedBox(width: 16)],
+        actions: [
+          const LanguageButton(),
+          UserButton(name: widget.user.name, onLogout: widget.refresh),
+          const SizedBox(width: 16),
+        ],
       ),
       body: FutureBuilder(
         future: _stories,

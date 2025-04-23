@@ -60,17 +60,18 @@ class StoriaRouter extends RouterDelegate<StoriaRoute>
         MaterialPage(
           key: const ValueKey("HomePage"),
           child: HomeScreen(
-            token: user!.token,
+            user: user!,
             toStory: (String id) {
               story = id;
               notifyListeners();
             },
+            refresh: load,
           ),
         ),
         if (story != null)
           MaterialPage(
             key: ValueKey("StoryPage-$story"),
-            child: StoryScreen(token: user!.token, id: story!),
+            child: StoryScreen(user: user!, id: story!, refresh: load),
           ),
       ];
     }

@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:storia/apis/stories.dart';
 import 'package:storia/common.dart';
 import 'package:storia/models/story.dart';
+import 'package:storia/models/user.dart';
 import 'package:storia/widgets/language_button.dart';
+import 'package:storia/widgets/user_button.dart';
 
 class StoryScreen extends StatefulWidget {
-  final String token;
+  final User user;
   final String id;
+  final Function() refresh;
 
-  const StoryScreen({super.key, required this.token, required this.id});
+  const StoryScreen({
+    super.key,
+    required this.user,
+    required this.id,
+    required this.refresh,
+  });
 
   @override
   State<StoryScreen> createState() => _StoryScreenState();
@@ -21,7 +29,7 @@ class _StoryScreenState extends State<StoryScreen> {
   @override
   void initState() {
     super.initState();
-    _storiesApi = StoriesApi(widget.token);
+    _storiesApi = StoriesApi(widget.user.token);
     _story = _storiesApi.detail(widget.id);
   }
 
@@ -34,7 +42,11 @@ class _StoryScreenState extends State<StoryScreen> {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         forceMaterialTransparency: true,
-        actions: const [LanguageButton(), SizedBox(width: 16)],
+        actions: [
+          const LanguageButton(),
+          UserButton(name: widget.user.name, onLogout: widget.refresh),
+          const SizedBox(width: 16),
+        ],
       ),
       body: FutureBuilder(
         future: _story,
