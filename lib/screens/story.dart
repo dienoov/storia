@@ -36,68 +36,65 @@ class _StoryScreenState extends State<StoryScreen> {
         forceMaterialTransparency: true,
         actions: const [LanguageButton(), SizedBox(width: 16)],
       ),
-      body: SingleChildScrollView(
-        child: FutureBuilder(
-          future: _story,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      body: FutureBuilder(
+        future: _story,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  snapshot.error.toString(),
-                  style: const TextStyle(color: Colors.red),
-                ),
-              );
-            }
-
-            if (!snapshot.hasData) {
-              return Center(
-                child: Text(AppLocalizations.of(context)!.notFound),
-              );
-            }
-
-            final Story story = snapshot.data!;
-
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 16,
-                        child: Text(story.name[0].toUpperCase()),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        story.name,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      story.photoUrl,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    story.description,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                snapshot.error.toString(),
+                style: const TextStyle(color: Colors.red),
               ),
             );
-          },
-        ),
+          }
+
+          if (!snapshot.hasData) {
+            return Center(child: Text(AppLocalizations.of(context)!.notFound));
+          }
+
+          final Story story = snapshot.data!;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(
+                    story.photoUrl,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 16,
+                      child: Text(story.name[0].toUpperCase()),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      story.name,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  story.description,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 32),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
