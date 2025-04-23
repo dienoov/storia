@@ -23,5 +23,6 @@
   "selectLanguageDescription": "Pilih bahasa yang ingin digunakan untuk aplikasi ini",
   "notFound": "Tidak ditemukan",
   "home": "Beranda",
-  "story": "Cerita"
+  "story": "Cerita",
+  "logout": "Keluar"
 }

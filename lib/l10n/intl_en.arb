@@ -23,5 +23,6 @@
   "selectLanguageDescription": "Choose your preferred language for the app",
   "notFound": "Not Found",
   "home": "Home",
-  "story": "Story"
+  "story": "Story",
+  "logout": "Logout"
 }
