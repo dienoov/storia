@@ -5,8 +5,13 @@ import 'package:storia/repositories/auth.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function() toRegister;
+  final Function() refresh;
 
-  const LoginScreen({super.key, required this.toRegister});
+  const LoginScreen({
+    super.key,
+    required this.toRegister,
+    required this.refresh,
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -43,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
           SnackBar(content: Text(AppLocalizations.of(context)!.loginSuccess)),
         );
       }
+
+      widget.refresh();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
