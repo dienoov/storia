@@ -21,5 +21,7 @@
   "registerSuccess": "Registration successful",
   "selectLanguage": "Select Language",
   "selectLanguageDescription": "Choose your preferred language for the app",
-  "notFound": "Not Found"
+  "notFound": "Not Found",
+  "home": "Home",
+  "story": "Story"
 }

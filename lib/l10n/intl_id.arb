@@ -21,5 +21,7 @@
   "registerSuccess": "Pendaftaran berhasil",
   "selectLanguage": "Pilih Bahasa",
   "selectLanguageDescription": "Pilih bahasa yang ingin digunakan untuk aplikasi ini",
-  "notFound": "Tidak ditemukan"
+  "notFound": "Tidak ditemukan",
+  "home": "Beranda",
+  "story": "Cerita"
 }

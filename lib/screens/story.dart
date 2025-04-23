@@ -29,6 +29,10 @@ class _StoryScreenState extends State<StoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context)!.story,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
         forceMaterialTransparency: true,
         actions: const [LanguageButton(), SizedBox(width: 16)],
       ),

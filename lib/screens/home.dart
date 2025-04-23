@@ -29,6 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context)!.home,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
         forceMaterialTransparency: true,
         actions: [const LanguageButton(), const SizedBox(width: 16)],
       ),
