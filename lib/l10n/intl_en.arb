@@ -5,5 +5,18 @@
   "registerDescription": "Create an account to start using the app",
   "name": "Name",
   "email": "Email",
-  "password": "Password"
+  "password": "Password",
+  "fieldRequired": "{field} is required",
+  "@fieldRequired": {
+    "description": "Error message when a required field is empty",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "emailInvalid": "Invalid email address",
+  "passwordInvalid": "Password must be at least 8 characters long",
+  "loginSuccess": "Login successful",
+  "registerSuccess": "Registration successful"
 }

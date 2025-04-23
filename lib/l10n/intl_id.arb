@@ -5,5 +5,18 @@
   "registerDescription": "Buat akun untuk mulai menggunakan aplikasi",
   "name": "Nama",
   "email": "Email",
-  "password": "Kata Sandi"
+  "password": "Kata Sandi",
+  "fieldRequired": "{field} wajib diisi",
+  "@fieldRequired": {
+    "description": "Error message when a required field is empty",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "emailInvalid": "Email tidak valid",
+  "passwordInvalid": "Kata sandi harus terdiri dari minimal 8 karakter",
+  "loginSuccess": "Login berhasil",
+  "registerSuccess": "Pendaftaran berhasil"
 }
