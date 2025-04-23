@@ -18,5 +18,7 @@
   "emailInvalid": "Email tidak valid",
   "passwordInvalid": "Kata sandi harus terdiri dari minimal 8 karakter",
   "loginSuccess": "Login berhasil",
-  "registerSuccess": "Pendaftaran berhasil"
+  "registerSuccess": "Pendaftaran berhasil",
+  "selectLanguage": "Pilih Bahasa",
+  "selectLanguageDescription": "Pilih bahasa yang ingin digunakan untuk aplikasi ini"
 }
