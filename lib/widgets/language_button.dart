@@ -44,7 +44,6 @@ class LanguageButton extends StatelessWidget {
                       context.read<LocalizationProvider>().locale = Locale(
                         value!,
                       );
-                      Navigator.pop(context);
                     },
                   ),
                   RadioListTile(
@@ -59,7 +58,6 @@ class LanguageButton extends StatelessWidget {
                       context.read<LocalizationProvider>().locale = Locale(
                         value!,
                       );
-                      Navigator.pop(context);
                     },
                   ),
                 ],
