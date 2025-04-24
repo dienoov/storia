@@ -53,4 +53,32 @@ class StoriesApi {
       throw Exception("Failed to load story");
     }
   }
+
+  Future<bool> add(String description, String path) async {
+    try {
+      final request = MultipartRequest("POST", Uri.parse("$_baseUrl/stories"));
+
+      request.headers.addAll(_headers);
+      request.fields["description"] = description;
+      request.files.add(
+        await MultipartFile.fromPath(
+          "photo",
+          path,
+          filename: path.split("/").last,
+        ),
+      );
+
+      final response = await request.send();
+
+      if (response.statusCode == 201) {
+        final data = await response.stream.bytesToString();
+        final json = jsonDecode(data);
+        return json["error"] == false;
+      }
+
+      throw Exception("Failed to add story");
+    } catch (e) {
+      throw Exception("Failed to add story");
+    }
+  }
 }
