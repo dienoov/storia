@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:storia/apis/auth.dart';
 import 'package:storia/common.dart';
 import 'package:storia/repositories/auth.dart';
+import 'package:storia/widgets/language_button.dart';
 
 class RegisterScreen extends StatefulWidget {
   final Function() toLogin;
@@ -93,7 +94,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 16),
               Text(
                 AppLocalizations.of(context)!.registerDescription,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurface.withAlpha(190),
                 ),
               ),
@@ -153,6 +154,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 },
               ),
               const Spacer(),
+              const LanguageButton(),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

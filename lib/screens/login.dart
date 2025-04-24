@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:storia/apis/auth.dart';
 import 'package:storia/common.dart';
 import 'package:storia/repositories/auth.dart';
+import 'package:storia/widgets/language_button.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function() toRegister;
@@ -86,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
               Text(
                 AppLocalizations.of(context)!.loginDescription,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurface.withAlpha(190),
                 ),
               ),
@@ -130,6 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               const Spacer(),
+              const LanguageButton(),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
