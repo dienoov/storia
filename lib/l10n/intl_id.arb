@@ -25,5 +25,13 @@
   "home": "Beranda",
   "story": "Cerita",
   "logout": "Keluar",
-  "upload": "Unggah"
+  "upload": "Unggah",
+  "camera": "Ambil foto",
+  "gallery": "Pilih dari galeri",
+  "image": "Gambar",
+  "noImage": "Belum ada gambar",
+  "noImageDescription": "Gambar akan ditampilkan di sini",
+  "description": "Deskripsi",
+  "descriptionHint": "Tulis deskripsi singkat tentang cerita kamu",
+  "uploadSuccess": "Berhasil mengunggah cerita"
 }

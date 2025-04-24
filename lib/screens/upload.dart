@@ -1,14 +1,99 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:storia/apis/stories.dart';
 import 'package:storia/common.dart';
 import 'package:storia/models/user.dart';
 import 'package:storia/widgets/language_button.dart';
 import 'package:storia/widgets/user_button.dart';
 
-class UploadScreen extends StatelessWidget {
+class UploadScreen extends StatefulWidget {
   final User user;
   final Function() refresh;
 
   const UploadScreen({super.key, required this.user, required this.refresh});
+
+  @override
+  State<UploadScreen> createState() => _UploadScreenState();
+}
+
+class _UploadScreenState extends State<UploadScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  File? _path;
+  final ImagePicker _picker = ImagePicker();
+
+  late StoriesApi _storiesApi;
+
+  @override
+  void initState() {
+    super.initState();
+    _storiesApi = StoriesApi(widget.user.token);
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _path = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> onSubmit() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    if (_path == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.error,
+          content: Text(
+            AppLocalizations.of(
+              context,
+            )!.fieldRequired(AppLocalizations.of(context)!.image),
+          ),
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+
+    try {
+      await _storiesApi.add(_descriptionController.text, _path!.path);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.uploadSuccess)),
+        );
+
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +106,118 @@ class UploadScreen extends StatelessWidget {
         forceMaterialTransparency: true,
         actions: [
           const LanguageButton(),
-          UserButton(name: user.name, onLogout: refresh),
+          UserButton(name: widget.user.name, onLogout: widget.refresh),
           const SizedBox(width: 16),
         ],
       ),
-      body: Center(child: Text(AppLocalizations.of(context)!.upload)),
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              if (_path != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    _path!,
+                    height: 360,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              else
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 48),
+                    Icon(
+                      Icons.image_outlined,
+                      size: 80,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withAlpha(190),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      AppLocalizations.of(context)!.noImage,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      AppLocalizations.of(context)!.noImageDescription,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withAlpha(190),
+                      ),
+                    ),
+                    const SizedBox(height: 56),
+                  ],
+                ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _pickImage(ImageSource.gallery),
+                      icon: const Icon(Icons.photo_library_outlined),
+                      label: Text(AppLocalizations.of(context)!.gallery),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _pickImage(ImageSource.camera),
+                      icon: const Icon(Icons.add_a_photo_outlined),
+                      label: Text(AppLocalizations.of(context)!.camera),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.descriptionHint,
+                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(190),
+                  ),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                ),
+                maxLines: 3,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppLocalizations.of(
+                      context,
+                    )!.fieldRequired(AppLocalizations.of(context)!.description);
+                  }
+                  return null;
+                },
+              ),
+              const Expanded(child: SizedBox()),
+              ElevatedButton(
+                onPressed: onSubmit,
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(44),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.upload,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

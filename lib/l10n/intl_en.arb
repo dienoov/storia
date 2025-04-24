@@ -25,5 +25,13 @@
   "home": "Home",
   "story": "Story",
   "logout": "Logout",
-  "upload": "Upload"
+  "upload": "Upload",
+  "camera": "Take a photo",
+  "gallery": "Choose from gallery",
+  "image": "Image",
+  "noImage": "No image",
+  "noImageDescription": "Your image will be displayed here",
+  "description": "Description",
+  "descriptionHint": "Write a short description of your story",
+  "uploadSuccess": "Story uploaded successfully"
 }
