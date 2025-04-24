@@ -10,12 +10,14 @@ class HomeScreen extends StatefulWidget {
   final User user;
   final Function(String) toStory;
   final Function() refresh;
+  final Function() toUpload;
 
   const HomeScreen({
     super.key,
     required this.user,
     required this.toStory,
     required this.refresh,
+    required this.toUpload,
   });
 
   @override
@@ -123,6 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: widget.toUpload,
+        child: const Icon(Icons.add_a_photo_outlined),
       ),
     );
   }

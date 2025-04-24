@@ -18,6 +18,8 @@ class StoriaRouteParser extends RouteInformationParser<StoriaRoute> {
           if (uri.pathSegments.length == 2) {
             return StoryRoute(uri.pathSegments[1]);
           }
+        case 'upload':
+          return UploadRoute();
       }
     }
 
@@ -32,6 +34,7 @@ class StoriaRouteParser extends RouteInformationParser<StoriaRoute> {
       StoryRoute() => RouteInformation(
         uri: Uri.parse("/story/${configuration.id}"),
       ),
+      UploadRoute() => RouteInformation(uri: Uri.parse("/upload")),
       _ => RouteInformation(uri: Uri.parse("/")),
     };
   }

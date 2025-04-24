@@ -11,3 +11,5 @@ final class StoryRoute extends StoriaRoute {
 
   StoryRoute(this.id);
 }
+
+final class UploadRoute extends StoriaRoute {}

@@ -6,6 +6,7 @@ import 'package:storia/screens/home.dart';
 import 'package:storia/screens/login.dart';
 import 'package:storia/screens/register.dart';
 import 'package:storia/screens/story.dart';
+import 'package:storia/screens/upload.dart';
 
 class StoriaRouter extends RouterDelegate<StoriaRoute>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -25,9 +26,10 @@ class StoriaRouter extends RouterDelegate<StoriaRoute>
   List<Page> pages = [];
 
   User? user;
+  String? story;
 
   bool hasAccount = true;
-  String? story;
+  bool isUploading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +68,21 @@ class StoriaRouter extends RouterDelegate<StoriaRoute>
               notifyListeners();
             },
             refresh: load,
+            toUpload: () {
+              isUploading = true;
+              notifyListeners();
+            },
           ),
         ),
         if (story != null)
           MaterialPage(
             key: ValueKey("StoryPage-$story"),
             child: StoryScreen(user: user!, id: story!, refresh: load),
+          ),
+        if (isUploading)
+          MaterialPage(
+            key: const ValueKey("StoryPage"),
+            child: UploadScreen(user: user!, refresh: load),
           ),
       ];
     }
@@ -82,6 +93,9 @@ class StoriaRouter extends RouterDelegate<StoriaRoute>
         if (page is MaterialPage) {
           if (page.child is StoryScreen) {
             story = null;
+          }
+          if (page.child is UploadScreen) {
+            isUploading = false;
           }
         }
         notifyListeners();
@@ -94,19 +108,21 @@ class StoriaRouter extends RouterDelegate<StoriaRoute>
 
   @override
   Future<void> setNewRoutePath(StoriaRoute configuration) async {
+    story = null;
+    hasAccount = true;
+    isUploading = false;
+
     switch (configuration) {
       case RegisterRoute():
         hasAccount = false;
         break;
-      case LoginRoute():
-        hasAccount = true;
-        break;
-      case HomeRoute():
-        story = null;
-        break;
       case StoryRoute():
         story = configuration.id.toString();
         break;
+      case UploadRoute():
+        isUploading = true;
+        break;
+      default:
     }
     notifyListeners();
   }
@@ -118,6 +134,10 @@ class StoriaRouter extends RouterDelegate<StoriaRoute>
     }
 
     if (user != null) {
+      if (isUploading) {
+        return UploadRoute();
+      }
+
       return story != null ? StoryRoute(story!) : HomeRoute();
     }
 
