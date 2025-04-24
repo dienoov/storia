@@ -24,5 +24,6 @@
   "notFound": "Not Found",
   "home": "Home",
   "story": "Story",
-  "logout": "Logout"
+  "logout": "Logout",
+  "upload": "Upload"
 }
