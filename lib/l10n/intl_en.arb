@@ -19,7 +19,7 @@
   "passwordInvalid": "Password must be at least 8 characters long",
   "loginSuccess": "Login successful",
   "registerSuccess": "Registration successful",
-  "selectLanguage": "Select Language",
+  "selectLanguage": "Select language",
   "selectLanguageDescription": "Choose your preferred language for the app",
   "notFound": "Not Found",
   "home": "Home",
