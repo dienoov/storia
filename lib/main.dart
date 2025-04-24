@@ -3,14 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:storia/common.dart';
 import 'package:storia/providers/localization.dart';
+import 'package:storia/providers/stories.dart';
 import 'package:storia/repositories/auth.dart';
 import 'package:storia/router/parser.dart';
 import 'package:storia/router/router.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => LocalizationProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => LocalizationProvider()),
+        ChangeNotifierProvider(create: (context) => StoriesProvider()),
+      ],
       child: const Storia(),
     ),
   );
@@ -39,15 +43,11 @@ class _StoriaState extends State<Storia> {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Storia',
-      locale: context
-          .watch<LocalizationProvider>()
-          .locale,
+      locale: context.watch<LocalizationProvider>().locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Color(0xFF3A7EB7)
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF3A7EB7)),
         textTheme: GoogleFonts.dmSansTextTheme(),
       ),
       routerDelegate: storiaRouter,
