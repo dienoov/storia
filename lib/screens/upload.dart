@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:storia/apis/stories.dart';
 import 'package:storia/common.dart';
 import 'package:storia/models/user.dart';
+import 'package:storia/providers/stories.dart';
 import 'package:storia/widgets/language_button.dart';
 import 'package:storia/widgets/user_button.dart';
 
@@ -77,6 +79,7 @@ class _UploadScreenState extends State<UploadScreen> {
           SnackBar(content: Text(AppLocalizations.of(context)!.uploadSuccess)),
         );
 
+        context.read<StoriesProvider>().all();
         Navigator.of(context).pop();
       }
     } catch (e) {
