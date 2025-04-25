@@ -113,10 +113,10 @@ class _UploadScreenState extends State<UploadScreen> {
           const SizedBox(width: 16),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
           child: Column(
             children: [
               const SizedBox(height: 16),
@@ -203,7 +203,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   return null;
                 },
               ),
-              const Expanded(child: SizedBox()),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: onSubmit,
                 style: ElevatedButton.styleFrom(
