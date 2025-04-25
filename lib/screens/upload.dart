@@ -29,6 +29,8 @@ class _UploadScreenState extends State<UploadScreen> {
 
   late StoriesApi _storiesApi;
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -63,13 +65,9 @@ class _UploadScreenState extends State<UploadScreen> {
       return;
     }
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
       await _storiesApi.add(_descriptionController.text, _path!.path);
@@ -92,135 +90,150 @@ class _UploadScreenState extends State<UploadScreen> {
         );
       }
     } finally {
-      if (mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
-      }
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.upload,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        forceMaterialTransparency: true,
-        actions: [
-          const LanguageButton(),
-          UserButton(name: widget.user.name, onLogout: widget.refresh),
-          const SizedBox(width: 16),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              if (_path != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.file(
-                    _path!,
-                    height: 360,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: Text(
+              AppLocalizations.of(context)!.upload,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            forceMaterialTransparency: true,
+            actions: [
+              const LanguageButton(),
+              UserButton(name: widget.user.name, onLogout: widget.refresh),
+              const SizedBox(width: 16),
+            ],
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  const SizedBox(height: 16),
+                  if (_path != null)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(
+                        _path!,
+                        height: 360,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  else
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 48),
+                        Icon(
+                          Icons.image_outlined,
+                          size: 80,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withAlpha(190),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          AppLocalizations.of(context)!.noImage,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          AppLocalizations.of(context)!.noImageDescription,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withAlpha(190),
+                          ),
+                        ),
+                        const SizedBox(height: 56),
+                      ],
+                    ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => _pickImage(ImageSource.gallery),
+                          icon: const Icon(Icons.photo_library_outlined),
+                          label: Text(AppLocalizations.of(context)!.gallery),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => _pickImage(ImageSource.camera),
+                          icon: const Icon(Icons.add_a_photo_outlined),
+                          label: Text(AppLocalizations.of(context)!.camera),
+                        ),
+                      ),
+                    ],
                   ),
-                )
-              else
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 48),
-                    Icon(
-                      Icons.image_outlined,
-                      size: 80,
-                      color: Theme.of(
+                  const SizedBox(height: 24),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!.descriptionHint,
+                      hintStyle: Theme.of(
                         context,
-                      ).colorScheme.onSurface.withAlpha(190),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      AppLocalizations.of(context)!.noImage,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      AppLocalizations.of(context)!.noImageDescription,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      ).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(
                           context,
                         ).colorScheme.onSurface.withAlpha(190),
                       ),
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
                     ),
-                    const SizedBox(height: 56),
-                  ],
-                ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () => _pickImage(ImageSource.gallery),
-                      icon: const Icon(Icons.photo_library_outlined),
-                      label: Text(AppLocalizations.of(context)!.gallery),
-                    ),
+                    maxLines: 3,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.fieldRequired(
+                          AppLocalizations.of(context)!.description,
+                        );
+                      }
+                      return null;
+                    },
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () => _pickImage(ImageSource.camera),
-                      icon: const Icon(Icons.add_a_photo_outlined),
-                      label: Text(AppLocalizations.of(context)!.camera),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: onSubmit,
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.upload,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.descriptionHint,
-                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withAlpha(190),
-                  ),
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                ),
-                maxLines: 3,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(
-                      context,
-                    )!.fieldRequired(AppLocalizations.of(context)!.description);
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: onSubmit,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(44),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.upload,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        if (_isLoading)
+          Positioned.fill(
+            child: Container(
+              color: Theme.of(context).colorScheme.surface.withAlpha(200),
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+          ),
+      ],
     );
   }
 }
