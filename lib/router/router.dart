@@ -82,7 +82,14 @@ class StoriaRouter extends RouterDelegate<StoriaRoute>
         if (isUploading)
           MaterialPage(
             key: const ValueKey("StoryPage"),
-            child: UploadScreen(user: user!, refresh: load),
+            child: UploadScreen(
+              user: user!,
+              refresh: load,
+              toHome: () {
+                isUploading = false;
+                notifyListeners();
+              },
+            ),
           ),
       ];
     }

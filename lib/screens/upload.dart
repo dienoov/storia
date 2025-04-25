@@ -13,8 +13,14 @@ import 'package:storia/widgets/user_button.dart';
 class UploadScreen extends StatefulWidget {
   final User user;
   final Function() refresh;
+  final Function() toHome;
 
-  const UploadScreen({super.key, required this.user, required this.refresh});
+  const UploadScreen({
+    super.key,
+    required this.user,
+    required this.refresh,
+    required this.toHome,
+  });
 
   @override
   State<UploadScreen> createState() => _UploadScreenState();
@@ -78,7 +84,7 @@ class _UploadScreenState extends State<UploadScreen> {
         );
 
         context.read<StoriesProvider>().all();
-        Navigator.of(context).pop();
+        widget.toHome();
       }
     } catch (e) {
       if (mounted) {
