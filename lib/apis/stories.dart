@@ -10,10 +10,10 @@ class StoriesApi {
 
   StoriesApi(token) : _headers = {"Authorization": "Bearer $token"};
 
-  Future<List<Story>> all() async {
+  Future<List<Story>> all({int page = 1}) async {
     try {
       final Response response = await get(
-        Uri.parse("$_baseUrl/stories"),
+        Uri.parse("$_baseUrl/stories?page=$page"),
         headers: _headers,
       );
 
