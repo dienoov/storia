@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart';
 import 'package:storia/models/story.dart';
 
@@ -33,24 +34,45 @@ class StoriesApi {
   }
 
   Future<Story> detail(String id) async {
+    late Story story;
+
     try {
       final Response response = await get(
         Uri.parse("$_baseUrl/stories/$id"),
         headers: _headers,
       );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body)["story"];
-        return Story.fromJson(data);
+      if (response.statusCode != 200) {
+        throw Exception(
+          response.body.isNotEmpty
+              ? jsonDecode(response.body)["message"]
+              : "Failed to load story",
+        );
       }
 
-      if (response.body.isNotEmpty) {
-        throw Exception(jsonDecode(response.body)["message"]);
-      } else {
-        throw Exception("Failed to load story");
+      final data = jsonDecode(response.body)["story"];
+      story = Story.fromJson(data);
+
+      if (story.lat == null || story.lon == null) {
+        return story;
       }
     } catch (e) {
       throw Exception("Failed to load story");
+    }
+
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        story.lat!,
+        story.lon!,
+      );
+
+      if (placemarks.isNotEmpty) {
+        story.address = placemarks.first;
+      }
+
+      return story;
+    } catch (e) {
+      return story;
     }
   }
 

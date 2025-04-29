@@ -1,3 +1,4 @@
+import 'package:geocoding/geocoding.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'story.g.dart';
@@ -11,6 +12,7 @@ class Story {
   final DateTime createdAt;
   final double? lat;
   final double? lon;
+  Placemark? address;
 
   Story({
     required this.id,
