@@ -83,7 +83,7 @@ class _UploadScreenState extends State<UploadScreen> {
           SnackBar(content: Text(AppLocalizations.of(context)!.uploadSuccess)),
         );
 
-        context.read<StoriesProvider>().all();
+        context.read<StoriesProvider>().init();
         widget.toHome();
       }
     } catch (e) {

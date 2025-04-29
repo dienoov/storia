@@ -27,15 +27,29 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    final StoriesProvider storiesProvider = Provider.of<StoriesProvider>(
-      context,
-      listen: false,
-    );
+
+    final StoriesProvider storiesProvider = context.read<StoriesProvider>();
     storiesProvider.token = widget.user.token;
-    storiesProvider.all();
+    storiesProvider.init();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent &&
+          !storiesProvider.isLast) {
+        storiesProvider.load();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,16 +70,17 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Consumer<StoriesProvider>(
         builder: (context, value, child) {
           return switch (value.state) {
-            LoadingState() => const Center(child: CircularProgressIndicator()),
-            ErrorState(error: String message) => Center(
-              child: Text(
-                message,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-            ),
             LoadedState(data: final List<Story> stories) => ListView.builder(
-              itemCount: stories.length,
+              controller: _scrollController,
+              itemCount: stories.length + (value.isLast ? 0 : 1),
               itemBuilder: (context, index) {
+                if (index == stories.length) {
+                  return const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
                 final Story story = stories[index];
                 return GestureDetector(
                   onTap: () {
@@ -109,6 +124,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               },
+            ),
+            LoadingState() => const Center(child: CircularProgressIndicator()),
+            ErrorState(error: String message) => Center(
+              child: Text(
+                message,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
             ),
             (_) => const SizedBox(),
           };
