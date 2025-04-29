@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:storia/apis/stories.dart';
 import 'package:storia/common.dart';
 import 'package:storia/models/story.dart';
@@ -71,12 +72,10 @@ class _StoryScreenState extends State<StoryScreen> {
           final Story story = snapshot.data!;
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
                   child: Image.network(
                     story.photoUrl,
                     fit: BoxFit.cover,
@@ -84,25 +83,93 @@ class _StoryScreenState extends State<StoryScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 16,
-                      child: Text(story.name[0].toUpperCase()),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      story.name,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 16,
+                        child: Text(story.name[0].toUpperCase()),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        story.name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  story.description,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    story.description,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 16),
+                if (story.lat != null && story.lon != null)
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withAlpha(25),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 56,
+                          child: Icon(
+                            Icons.location_on,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Expanded(
+                          child: Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Text(
+                                [
+                                  story.address?.street,
+                                  story.address?.subLocality,
+                                  story.address?.locality,
+                                  story.address?.administrativeArea,
+                                  story.address?.country,
+                                ].where((e) => e != '').join(", "),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: SizedBox.square(
+                            dimension: 96,
+                            child: GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target: LatLng(story.lat!, story.lon!),
+                                zoom: 16,
+                              ),
+                              markers: {
+                                Marker(
+                                  markerId: MarkerId(story.id),
+                                  position: LatLng(story.lat!, story.lon!),
+                                  infoWindow: InfoWindow(title: story.name),
+                                ),
+                              },
+                              myLocationEnabled: false,
+                              myLocationButtonEnabled: false,
+                              mapToolbarEnabled: false,
+                              zoomControlsEnabled: false,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 48),
               ],
             ),
           );
