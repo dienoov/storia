@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:storia/models/story.dart';
 
@@ -76,7 +77,7 @@ class StoriesApi {
     }
   }
 
-  Future<bool> add(String description, String path) async {
+  Future<bool> add(String description, String path, [LatLng? position]) async {
     try {
       final request = MultipartRequest("POST", Uri.parse("$_baseUrl/stories"));
 
@@ -89,6 +90,11 @@ class StoriesApi {
           filename: path.split("/").last,
         ),
       );
+
+      if (position != null) {
+        request.fields["lat"] = position.latitude.toString();
+        request.fields["lon"] = position.longitude.toString();
+      }
 
       final response = await request.send();
 
