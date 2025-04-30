@@ -9,6 +9,7 @@ import 'package:storia/common.dart';
 import 'package:storia/models/user.dart';
 import 'package:storia/providers/stories.dart';
 import 'package:storia/widgets/language_button.dart';
+import 'package:storia/widgets/loading_indicator.dart';
 import 'package:storia/widgets/location_picker.dart';
 import 'package:storia/widgets/user_button.dart';
 
@@ -297,7 +298,7 @@ class _UploadScreenState extends State<UploadScreen> {
           Positioned.fill(
             child: Container(
               color: Theme.of(context).colorScheme.surface.withAlpha(200),
-              child: const Center(child: CircularProgressIndicator()),
+              child: const Center(child: LoadingIndicator()),
             ),
           ),
       ],

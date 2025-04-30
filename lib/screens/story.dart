@@ -5,6 +5,7 @@ import 'package:storia/common.dart';
 import 'package:storia/models/story.dart';
 import 'package:storia/models/user.dart';
 import 'package:storia/widgets/language_button.dart';
+import 'package:storia/widgets/loading_indicator.dart';
 import 'package:storia/widgets/user_button.dart';
 
 class StoryScreen extends StatefulWidget {
@@ -53,7 +54,7 @@ class _StoryScreenState extends State<StoryScreen> {
         future: _story,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: LoadingIndicator());
           }
 
           if (snapshot.hasError) {

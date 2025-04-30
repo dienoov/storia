@@ -3,6 +3,7 @@ import 'package:storia/apis/auth.dart';
 import 'package:storia/common.dart';
 import 'package:storia/repositories/auth.dart';
 import 'package:storia/widgets/language_button.dart';
+import 'package:storia/widgets/loading_indicator.dart';
 
 class RegisterScreen extends StatefulWidget {
   final Function() toLogin;
@@ -199,7 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Positioned.fill(
             child: Container(
               color: Theme.of(context).colorScheme.surface.withAlpha(200),
-              child: const Center(child: CircularProgressIndicator()),
+              child: const Center(child: LoadingIndicator()),
             ),
           ),
       ],

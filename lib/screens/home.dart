@@ -6,6 +6,7 @@ import 'package:storia/models/user.dart';
 import 'package:storia/providers/state.dart';
 import 'package:storia/providers/stories.dart';
 import 'package:storia/widgets/language_button.dart';
+import 'package:storia/widgets/loading_indicator.dart';
 import 'package:storia/widgets/user_button.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -77,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (index == stories.length) {
                   return const Padding(
                     padding: EdgeInsets.all(16),
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(child: LoadingIndicator()),
                   );
                 }
 
@@ -125,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            LoadingState() => const Center(child: CircularProgressIndicator()),
+            LoadingState() => const Center(child: LoadingIndicator()),
             ErrorState(error: String message) => Center(
               child: Text(
                 message,
