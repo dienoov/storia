@@ -16,10 +16,9 @@ class LocationPicker extends StatefulWidget {
 class _LocationPickerState extends State<LocationPicker> {
   late GoogleMapController? _mapController;
 
-  late LatLng _position = const LatLng(-0.9720384, 116.7131314);
-  late Set<Marker> _markers = {};
-  late Placemark _placemark;
-
+  LatLng _position = const LatLng(-0.9720384, 116.7131314);
+  Set<Marker> _markers = {};
+  Placemark _placemark = Placemark();
   String _message = '';
 
   @override
@@ -74,6 +73,16 @@ class _LocationPickerState extends State<LocationPicker> {
         Marker(
           markerId: MarkerId(position.hashCode.toString()),
           position: position,
+          infoWindow: InfoWindow(
+            title: _placemark.street,
+            snippet: [
+              _placemark.subLocality,
+              _placemark.locality,
+              _placemark.administrativeArea,
+              _placemark.postalCode,
+              _placemark.country,
+            ].where((e) => e != '').join(', '),
+          ),
         ),
       };
     });
@@ -91,6 +100,16 @@ class _LocationPickerState extends State<LocationPicker> {
         Marker(
           markerId: MarkerId(position.hashCode.toString()),
           position: position,
+          infoWindow: InfoWindow(
+            title: _placemark.street,
+            snippet: [
+              _placemark.subLocality,
+              _placemark.locality,
+              _placemark.administrativeArea,
+              _placemark.postalCode,
+              _placemark.country,
+            ].where((e) => e != '').join(', '),
+          ),
         ),
       };
     });
@@ -109,8 +128,13 @@ class _LocationPickerState extends State<LocationPicker> {
 
       setState(() {
         _placemark = placemarks.first;
+        _message = '';
       });
-    } catch (e) {}
+    } catch (e) {
+      setState(() {
+        _message = e.toString();
+      });
+    }
   }
 
   @override
