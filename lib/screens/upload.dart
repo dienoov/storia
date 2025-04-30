@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:storia/apis/stories.dart';
 import 'package:storia/common.dart';
+import 'package:storia/flavor.dart';
 import 'package:storia/models/user.dart';
 import 'package:storia/providers/stories.dart';
 import 'package:storia/widgets/language_button.dart';
@@ -225,57 +226,59 @@ class _UploadScreenState extends State<UploadScreen> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        enableDrag: false,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
-                        builder:
-                            (context) => LocationPicker(
-                              onPicked: (position, placemark) {
-                                setState(() {
-                                  _position = position;
-                                });
-                                _locationController.text = [
-                                  placemark.street,
-                                  placemark.subLocality,
-                                  placemark.locality,
-                                  placemark.administrativeArea,
-                                  placemark.postalCode,
-                                  placemark.country,
-                                ].where((e) => e != '').join(", ");
-                              },
-                            ),
-                      );
-                    },
-                    child: TextField(
-                      controller: _locationController,
-                      enabled: false,
-                      decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)!.location,
-                        hintStyle: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(
+                  if (FlavorConfig.instance.flavor == FlavorType.paid) ...[
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          enableDrag: false,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
+                          builder:
+                              (context) => LocationPicker(
+                                onPicked: (position, placemark) {
+                                  setState(() {
+                                    _position = position;
+                                  });
+                                  _locationController.text = [
+                                    placemark.street,
+                                    placemark.subLocality,
+                                    placemark.locality,
+                                    placemark.administrativeArea,
+                                    placemark.postalCode,
+                                    placemark.country,
+                                  ].where((e) => e != '').join(", ");
+                                },
+                              ),
+                        );
+                      },
+                      child: TextField(
+                        controller: _locationController,
+                        enabled: false,
+                        decoration: InputDecoration(
+                          hintText: AppLocalizations.of(context)!.location,
+                          hintStyle: Theme.of(
                             context,
-                          ).colorScheme.onSurface.withAlpha(190),
-                        ),
-                        disabledBorder: OutlineInputBorder(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(8),
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withAlpha(190),
                           ),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.outline,
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
                           ),
                         ),
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
+                  ],
                   ElevatedButton(
                     onPressed: onSubmit,
                     style: ElevatedButton.styleFrom(
