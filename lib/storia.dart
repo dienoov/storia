@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:storia/common.dart';
+import 'package:storia/flavor.dart';
 import 'package:storia/providers/localization.dart';
 import 'package:storia/providers/stories.dart';
 import 'package:storia/repositories/auth.dart';
 import 'package:storia/router/parser.dart';
 import 'package:storia/router/router.dart';
 
-void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => LocalizationProvider()),
-        ChangeNotifierProvider(create: (context) => StoriesProvider()),
-      ],
-      child: const Storia(),
-    ),
+Widget storiaApp() {
+  return MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => LocalizationProvider()),
+      ChangeNotifierProvider(create: (context) => StoriesProvider()),
+    ],
+    child: const Storia(),
   );
 }
 
@@ -42,7 +41,7 @@ class _StoriaState extends State<Storia> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Storia',
+      title: FlavorConfig.instance.values.title,
       locale: context.watch<LocalizationProvider>().locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
