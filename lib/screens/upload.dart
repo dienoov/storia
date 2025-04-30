@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:storia/apis/stories.dart';
@@ -8,6 +9,7 @@ import 'package:storia/common.dart';
 import 'package:storia/models/user.dart';
 import 'package:storia/providers/stories.dart';
 import 'package:storia/widgets/language_button.dart';
+import 'package:storia/widgets/location_picker.dart';
 import 'package:storia/widgets/user_button.dart';
 
 class UploadScreen extends StatefulWidget {
@@ -29,9 +31,12 @@ class UploadScreen extends StatefulWidget {
 class _UploadScreenState extends State<UploadScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
 
   File? _path;
   final ImagePicker _picker = ImagePicker();
+
+  LatLng? _position;
 
   late StoriesApi _storiesApi;
 
@@ -76,7 +81,11 @@ class _UploadScreenState extends State<UploadScreen> {
     });
 
     try {
-      await _storiesApi.add(_descriptionController.text, _path!.path);
+      await _storiesApi.add(
+        _descriptionController.text,
+        _path!.path,
+        _position,
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -203,6 +212,7 @@ class _UploadScreenState extends State<UploadScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
                     ),
+                    style: Theme.of(context).textTheme.bodyMedium,
                     maxLines: 3,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -212,6 +222,57 @@ class _UploadScreenState extends State<UploadScreen> {
                       }
                       return null;
                     },
+                  ),
+                  const SizedBox(height: 24),
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        enableDrag: false,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        builder:
+                            (context) => LocationPicker(
+                              onPicked: (position, placemark) {
+                                setState(() {
+                                  _position = position;
+                                });
+                                _locationController.text = [
+                                  placemark.street,
+                                  placemark.subLocality,
+                                  placemark.locality,
+                                  placemark.administrativeArea,
+                                  placemark.postalCode,
+                                  placemark.country,
+                                ].where((e) => e != '').join(", ");
+                              },
+                            ),
+                      );
+                    },
+                    child: TextField(
+                      controller: _locationController,
+                      enabled: false,
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context)!.location,
+                        hintStyle: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withAlpha(190),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                        ),
+                      ),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(

@@ -33,5 +33,8 @@
   "noImageDescription": "Gambar akan ditampilkan di sini",
   "description": "Deskripsi",
   "descriptionHint": "Tulis deskripsi singkat tentang cerita kamu",
-  "uploadSuccess": "Berhasil mengunggah cerita"
+  "uploadSuccess": "Berhasil mengunggah cerita",
+  "location": "Ketuk untuk memilih lokasi",
+  "locationDisabled": "Silakan aktifkan layanan lokasi untuk menggunakan fitur ini",
+  "locationDenied": "Silakan izinkan izin lokasi untuk menggunakan fitur ini"
 }

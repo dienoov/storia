@@ -33,5 +33,8 @@
   "noImageDescription": "Your image will be displayed here",
   "description": "Description",
   "descriptionHint": "Write a short description of your story",
-  "uploadSuccess": "Story uploaded successfully"
+  "uploadSuccess": "Story uploaded successfully",
+  "location": "Tap to select location",
+  "locationDisabled": "Please enable location services to use this feature",
+  "locationDenied": "Please allow location permission to use this feature"
 }
