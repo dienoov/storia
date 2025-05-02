@@ -166,7 +166,7 @@ class _LocationPickerState extends State<LocationPicker> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _placemark.street!,
+                    _placemark.street ?? '',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   Text(

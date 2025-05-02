@@ -232,6 +232,7 @@ class _UploadScreenState extends State<UploadScreen> {
                         showModalBottomSheet(
                           context: context,
                           enableDrag: false,
+                          isScrollControlled: true,
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.zero,
                           ),
