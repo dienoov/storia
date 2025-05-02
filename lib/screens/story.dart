@@ -109,7 +109,7 @@ class _StoryScreenState extends State<StoryScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                if (story.lat != null && story.lon != null)
+                if (story.lat != null && story.lon != null) ...[
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(
@@ -139,37 +139,50 @@ class _StoryScreenState extends State<StoryScreen> {
                                   story.address?.administrativeArea,
                                   story.address?.country,
                                 ].where((e) => e != '').join(", "),
-                                style: Theme.of(context).textTheme.bodySmall,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16),
-                          child: SizedBox.square(
-                            dimension: 96,
-                            child: GoogleMap(
-                              initialCameraPosition: CameraPosition(
-                                target: LatLng(story.lat!, story.lon!),
-                                zoom: 16,
-                              ),
-                              markers: {
-                                Marker(
-                                  markerId: MarkerId(story.id),
-                                  position: LatLng(story.lat!, story.lon!),
-                                  infoWindow: InfoWindow(title: story.name),
-                                ),
-                              },
-                              myLocationEnabled: false,
-                              myLocationButtonEnabled: false,
-                              mapToolbarEnabled: false,
-                              zoomControlsEnabled: false,
-                            ),
-                          ),
-                        ),
+                        const SizedBox(width: 16),
                       ],
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SizedBox(
+                      height: 320,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(story.lat!, story.lon!),
+                            zoom: 16,
+                          ),
+                          markers: {
+                            Marker(
+                              markerId: MarkerId(story.id),
+                              position: LatLng(story.lat!, story.lon!),
+                              infoWindow: InfoWindow(
+                                title: story.address?.street,
+                                snippet: [
+                                  story.address?.subLocality,
+                                  story.address?.locality,
+                                  story.address?.administrativeArea,
+                                  story.address?.country,
+                                ].where((e) => e != '').join(", "),
+                              ),
+                            ),
+                          },
+                          myLocationEnabled: false,
+                          myLocationButtonEnabled: false,
+                          mapToolbarEnabled: false,
+                          zoomControlsEnabled: false,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 48),
               ],
             ),
